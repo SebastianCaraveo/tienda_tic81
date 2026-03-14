@@ -4,6 +4,7 @@ namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
@@ -21,6 +22,7 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'is_admin',
     ];
 
     /**
@@ -43,6 +45,21 @@ class User extends Authenticatable
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'is_admin' => 'boolean',
         ];
     }
+
+    public function carts(): HasMany{ // Relacion uno a muchos con el carrito
+        return $this->hasMany(Cart::class);
+    }
+
+    public function orders(): HasMany{ // Relacion uno a muchos con las ordenes
+        return $this->hasMany(Order::class);
+    }
+
+    /* Metodo para obtener el carrito activo */
+    public function activeCart(){ // Relacion uno a uno con el carrito activo
+        return $this->hasOne(Cart::class)->where('status', 'active');
+    }
+
 }
